@@ -1,14 +1,11 @@
 import pyrebase
+import sys_constants
 
-config = {
-    #confidential config keys here
-};
+config = sys_constants.getAdminKeys()
 
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
-
-
 
 def LoginAsAdmin():
     user = auth.sign_in_with_email_and_password('kesavaprasadarul@outlook.com','95123456')
