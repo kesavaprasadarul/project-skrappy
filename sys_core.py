@@ -51,6 +51,17 @@ def ReadAsin(asin_id):
     url = "https://www.amazon.in/dp/" + asin_id
     return AmazonParser(url)
 
+def ReturnLowestPrice(payload):
+    if(payload['deal_price'] is not None):
+        return payload['deal_price']
+    elif(payload['sale_price'] is not None):
+        return payload['sale_price']
+    else:
+        return payload['original_price']
+
+def GetProductPayload(url):
+    id = parseIDfromURL(url)
+    return ReadAsin(id)
 
 def parseIDfromURL(url):
     parse_url = parse.urlsplit(url)
@@ -71,7 +82,7 @@ def getASINPrices(idList):
     for i in ids:
         results.append(ReadAsin(i))
     jsonD = json.dumps(results)
-    return jsonD
+    return jsonD,results
 
 x = getASINPrices("B01LNJ8VXE")
 print(x)

@@ -54,16 +54,21 @@ class TestClass(BaseHTTPRequestHandler):
         elif self.path=="/add":
             uid=""
             url=""
-            for name,value in self.headers.item():
+            tprice=""
+            for name,value in self.headers.items():
                 if name == "id":
                     uid=value
                 elif name =="url":
                     url = value
+                elif name == "triggerPrice":
+                    tprice = value
 
             if(uid == "" or url == ""):
                 return
 
-
+            sid = sys_core.parseIDfromURL(url)
+            payload = skrappy_01.AddItemToQueue(uid,url,sid,tprice)
+            self.wfile.write("Done!".encode('utf-8'))
 
     def _set_response(self):
         self.send_response(200)

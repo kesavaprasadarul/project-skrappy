@@ -1,5 +1,6 @@
 import pyrebase
 import sys_constants
+import sys_core
 from urllib import parse
 
 config = sys_constants.getAdminKeys()
@@ -26,10 +27,14 @@ def GetCurrentQueueFromId(id):
     Queue = db.child('users').child(id).child('items').get(user['idToken']).val()
     return Queue
 
-def AddItemToQueue(userId,url,id,registeredPrice,triggerPrice):
+def AddItemToQueue(userId,url,id,triggerPrice,registeredPrice = -1):
+    if(registeredPrice == -1):
+        json = sys_core.GetProductPayload(url)
+        registeredPrice = sys_core.ReturnLowestPrice(json)
     payload = {'url': url, 'registeredPrice': registeredPrice, 'triggerPrice': triggerPrice}
     db.child('users').child(userId).child('items').child(id).set(payload, user['idToken'])
     AddItemToGlobalQueue(id)
+    return payload
 
 
 def AddItemToGlobalQueue(id):
@@ -39,13 +44,5 @@ def AddItemToGlobalQueue(id):
         queue = queue + "," + str(id)
     payload = {"amazon":queue}
     db.child('g_queue').update(payload,user['idToken'])
-
-def ParseIDfromURL(url):
-    parse_url = parse.urlsplit(url)
-    params = parse_url.path.split('/')
-    for i in range(len(params)):
-        if params[i] == "dp":
-            return params[i + 1]
-    return None
 
 LoginAsAdmin()
