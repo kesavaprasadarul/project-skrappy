@@ -1,9 +1,8 @@
 from lxml import html
 import csv, os, json
 import requests
-from exceptions import ValueError
 from time import sleep
-import urlparse
+from urllib import parse
 import _thread
 
 def AmazonParser(url):
@@ -54,7 +53,7 @@ def ReadAsin(asin_id):
 
 
 def parseIDfromURL(url):
-    parse_url = urlparse.urlsplit(url)
+    parse_url = parse.urlsplit(url)
     params = parse_url.path.split('/')
     for i in range(len(params)):
         if params[i] == "dp":
@@ -72,3 +71,7 @@ def getASINPrices(idList):
     for i in ids:
         results.append(ReadAsin(i))
     jsonD = json.dumps(results)
+    return jsonD
+
+x = getASINPrices("B01LNJ8VXE")
+print(x)
